@@ -6,7 +6,7 @@ import getRng
 if __name__ == "__main__":
 
     # getCS.go_date("220523")
-    getCS.catch_cs((684, 0, 554, 800), "20220714-연장-46")  # 9.17.20.28.50.
+    # getCS.catch_cs((684, 0, 554, 800), "20220714-연장-46")  # 9.17.20.28.50.
 
     # xdate_list: object = [
     #     "220616", "220627", "220704"
@@ -43,27 +43,27 @@ if __name__ == "__main__":
     #     except IndexError:
     #         pass
 
-    # n = 75
-    # for i in range(n):
-    #     print(i, "/", n + 2)
-    #     getCS.catch_scroll("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 0, 554, 600))  # 상영역
-    #     time.sleep(1)
-    #     pag.scroll(-1)
-    #     time.sleep(1)
-    #     pag.scroll(-1)
-    #     i += 1
-    #
-    # try:
-    #     print(n + 1, "/", n + 2)
-    #     getCS.catch_top("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 420, 554, 400))  # 중영역
-    #     time.sleep(1)
-    #     pag.scroll(-1)
-    #     time.sleep(1)
-    #     pag.scroll(-1)
-    #     print(n + 2, "/", n + 2)
-    #     getCS.catch_top("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 660, 554, 300))  # 하영역
-    # except IndexError:
-    #     pass
+    n = 31
+    for i in range(n):
+        print(i, "/", n + 2)
+        getCS.catch_scroll("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 0, 554, 600))  # 상영역
+        time.sleep(1)
+        pag.scroll(-1)
+        time.sleep(1)
+        pag.scroll(-1)
+        i += 1
+
+    try:
+        print(n + 1, "/", n + 2)
+        getCS.catch_top("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 420, 554, 400))  # 중영역
+        time.sleep(1)
+        pag.scroll(-1)
+        time.sleep(1)
+        pag.scroll(-1)
+        print(n + 2, "/", n + 2)
+        getCS.catch_top("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 660, 554, 300))  # 하영역
+    except IndexError:
+        pass
 
 
 else:
