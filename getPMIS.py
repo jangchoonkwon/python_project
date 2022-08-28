@@ -68,7 +68,7 @@ def go_Web():
 
 
 if __name__ == "__main__":
-    go_Web("D:/FineTec/DailyLoss/Loss_img/pmis_sch.png", 0, 0.9)
+    go_Web()
     # c_click("D:/FineTec/DailyLoss/Loss_img/pmis_exl.png", 2, 0.98)
     # c_click("D:/FineTec/DailyLoss/Loss_img/pmis_cnf.png", 2, 0.95)
     # def pm_login(ipt1, ipt2):

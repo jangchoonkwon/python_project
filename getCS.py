@@ -11,20 +11,39 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
 
+def get_gunsu(img_gunsu = "d:/FineTec/DailyLoss/ocr/gunsu.png",sch_region = [672,0,554,600]):
+    time.sleep(1)
+    p_list = pag.locateAllOnScreen(img_gunsu, confidence=0.9, region=sch_region)
+    p_list = list(p_list)
+    print(p_list)
+    p_list = p_list[0][0] + 27, p_list[0][1] - 3, p_list[0][2] + p_list[0][0], p_list[0][3] + 3  # 사용하는 코드
+    print(p_list)
+    pag.screenshot("d:/FineTec/DailyLoss/ocr/gunsu1.png", region=p_list)
+    tgrImg = "d:/FineTec/DailyLoss/ocr/gunsu1.png"
+    time.sleep(3)
+    image = cv2.imread(tgrImg)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    filename = '{}.png'.format(os.getpid())
+    cv2.imwrite(filename, gray)
+    text = pytesseract.image_to_string(Image.open(filename), lang='kor')
+    text = text.replace("(", "").replace(")", "").replace("건","").replace(" ","")
+    text = re.sub("(\d{2})", "\\1", text)
+    gunsu = int(text)
+    cv2.imshow(filename, image)
+    cv2.waitKey(1)
+    del(filename)
+    print(int(gunsu))
+    return gunsu
+
 
 def go_date(xdt: object) -> str:
-    """
-
-    :rtype: object
-    """
     pag.moveTo(1224, 500)
     pag.click
     pag.scroll(-1)
     time.sleep(1)
     pag.scroll(-1)
     time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_top.png", confidence=0.85,
-                                      region=(672, 800, 554, 1080 - 800))
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_top.png", confidence=0.85, region=(672, 800, 554, 1080 - 800))
     time.sleep(1)
     pag.click(center)
     # center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal1.png", confidence=0.85, region=(672, 0, 554, 300))
@@ -38,35 +57,18 @@ def go_date(xdt: object) -> str:
     pag.moveTo(1194, 174, 0.5)
     pag.click()
     time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal3.png", confidence=0.85,
-                                      region=(672, 300, 554, 500))
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal3.png", confidence=0.85, region=(672, 300, 554, 500))
     pag.click(center)
     time.sleep(1)
     pag.typewrite('{0}.{1}.{2}.'.format(xdt[:2], xdt[2:4], xdt[-2:]))
     time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_cnf.png", confidence=0.9,
-                                      region=(672, 600, 554, 400))
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_cnf.png", confidence=0.9, region=(672, 600, 554, 400))
     pag.click(center)
     time.sleep(1)
     center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_sch.png", confidence=0.9,
                                       region=(672, 800, 554, 1080 - 800))
     pag.click(center)
     time.sleep(1)
-
-
-# for i in xdate_list:
-#     go_CS_date(i)
-#     pag.moveTo(3048, 441)
-#     time.sleep(10)
-
-# go_CS_date("211214")
-
-# cs_top = "D:/FineTec/DailyLoss/Loss_img/cs_top.png"
-# cal1 = "D:/FineTec/DailyLoss/Loss_img/cs_cal1.png"
-# cal2 = "D:/FineTec/DailyLoss/Loss_img/cs_cal2.png"
-# cal3 = "D:/FineTec/DailyLoss/Loss_img/cs_cal3.png"
-# cal_cnf = "D:/FineTec/DailyLoss/Loss_img/cs_cal_cnf.png"
-# cal_sch = "D:/FineTec/DailyLoss/Loss_img/cs_cal_sch.png"
 
 
 def catch_scroll(img, sch_region):
@@ -114,13 +116,7 @@ def catch_scroll(img, sch_region):
     cv2.waitKey(1)
 
     time.sleep(1)
-    # p_click = pag.locateAllOnScreen(img, confidence=0.9, region=(672, 0, 554, 800))
-    # assert isinstance(p_click, object)
-    # p_click = list(p_click)
-    # p_click = pag.moveTo(p_click[0][0] + 240, p_click[0][1] + 176)
-    p_click = pag.locateCenterOnScreen("d:/FineTec/DailyLoss/ocr/cs_sheet.png", confidence=0.8,
-                                       region=(672, p_list[1], 600, 500))
-    # p_click = pag.locateCenterOnScreen(p_click, confidence=0.9, region=(672, 0, 554, 800))
+    p_click = pag.locateCenterOnScreen("d:/FineTec/DailyLoss/ocr/cs_sheet.png", confidence=0.8, region=(672, p_list[1], 600, 500))
     pag.click(p_click)
     time.sleep(7)
     pag.screenshot(out_full_name, region=(672, 170, 554, 800))
@@ -442,16 +438,18 @@ def catch_file_name(img, sch_region):
 
 
 if __name__ == "__main__":
+    get_gunsu()
     # cs_img = "D:/FineTec/DailyLoss/Loss_img/cs_sheet.png"
     # cs_name = "D:/FineTec/DailyLoss/ocr/202112114-주간-10.png"
     # srch_Region1 = 672, 0, 554, 600 # 상영역
     # srch_Region2 = 672, 500, 554, 300 # 중영역
     # srch_Region3 = 672, 800, 554, 200 # 하영역
     # catch_scroll("d:/FineTec/DailyLoss/ocr/cs_drino.png", (srch_Region1))
-    getRng.pressF4()
-    catch_top("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 0, 554, 800))
+    # getRng.pressF4()
+    # catch_top("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 0, 554, 800))
     # catch_middle("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 0, 554, 800))
     # catch_bottom("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 0, 554, 800))
     # catch_cs((672, 0, 554, 1080), "20220112-주간연장-7")
+
 else:
     print("---------- module running ----------")
