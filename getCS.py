@@ -1,7 +1,6 @@
 import pyautogui as pag
 import time, cv2, os, re
 
-import getRng
 
 try:
     from PIL import Image
@@ -11,12 +10,40 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
 
+
+def go_date(xdt: object) -> str: #"220103"
+    time.sleep(1)
+    pag.click(1220, 900, duration = 0.5)
+    pag.dragRel(0, -380, duration = 1)
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_top.png", confidence=0.85, region=(672, 800, 554, 1080 - 800))
+    time.sleep(1)
+    pag.click(center)
+    time.sleep(1)
+    pag.moveTo(1205, 130, 0.5)
+    pag.click()
+    time.sleep(1)
+    pag.moveTo(1194, 174, 0.5)
+    pag.click()
+    time.sleep(1)
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal3.png", confidence=0.85, region=(672, 300, 554, 500))
+    pag.click(center)
+    time.sleep(2)
+    pag.typewrite(f'{xdt[:2]}.{xdt[2:4]}.{xdt[-2:]}.')
+    time.sleep(1)
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_cnf.png", confidence=0.9, region=(672, 600, 554, 400))
+    pag.click(center)
+    time.sleep(1)
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_sch.png", confidence=0.9, region=(672, 800, 554, 1080 - 800))
+    pag.click(center)
+    time.sleep(1)
+
+
 def get_gunsu(img_gunsu = "d:/FineTec/DailyLoss/ocr/gunsu.png",sch_region = [672,0,554,600]):
     time.sleep(1)
     p_list = pag.locateAllOnScreen(img_gunsu, confidence=0.9, region=sch_region)
     p_list = list(p_list)
     print(p_list)
-    p_list = p_list[0][0] + 27, p_list[0][1] - 3, p_list[0][2] + p_list[0][0], p_list[0][3] + 3  # 사용하는 코드
+    p_list = p_list[0][0], p_list[0][1]-2, p_list[0][2]+32, p_list[0][3]+2  # 사용하는 코드
     print(p_list)
     pag.screenshot("d:/FineTec/DailyLoss/ocr/gunsu1.png", region=p_list)
     tgrImg = "d:/FineTec/DailyLoss/ocr/gunsu1.png"
@@ -25,50 +52,13 @@ def get_gunsu(img_gunsu = "d:/FineTec/DailyLoss/ocr/gunsu.png",sch_region = [672
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     filename = '{}.png'.format(os.getpid())
     cv2.imwrite(filename, gray)
-    text = pytesseract.image_to_string(Image.open(filename), lang='kor')
-    text = text.replace("(", "").replace(")", "").replace("건","").replace(" ","")
-    text = re.sub("(\d{2})", "\\1", text)
-    gunsu = int(text)
+    text = pytesseract.image_to_string(Image.open(filename), lang="kor")
+    text = re.findall("\d{2}", text)
     cv2.imshow(filename, image)
     cv2.waitKey(1)
-    del(filename)
-    print(int(gunsu))
-    return gunsu
-
-
-def go_date(xdt: object) -> str:
-    pag.moveTo(1224, 500)
-    pag.click
-    pag.scroll(-1)
-    time.sleep(1)
-    pag.scroll(-1)
-    time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_top.png", confidence=0.85, region=(672, 800, 554, 1080 - 800))
-    time.sleep(1)
-    pag.click(center)
-    # center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal1.png", confidence=0.85, region=(672, 0, 554, 300))
-    # pag.click(center)
-    time.sleep(1)
-    pag.moveTo(1205, 130, 0.5)
-    pag.click()
-    # center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal2.png", confidence=0.85, region=(672, 100, 554, 100))
-    # pag.click(center)
-    time.sleep(1)
-    pag.moveTo(1194, 174, 0.5)
-    pag.click()
-    time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal3.png", confidence=0.85, region=(672, 300, 554, 500))
-    pag.click(center)
-    time.sleep(1)
-    pag.typewrite('{0}.{1}.{2}.'.format(xdt[:2], xdt[2:4], xdt[-2:]))
-    time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_cnf.png", confidence=0.9, region=(672, 600, 554, 400))
-    pag.click(center)
-    time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_sch.png", confidence=0.9,
-                                      region=(672, 800, 554, 1080 - 800))
-    pag.click(center)
-    time.sleep(1)
+    os.remove(filename)
+    print(text)
+    return int(text[0])
 
 
 def catch_scroll(img, sch_region):
@@ -438,7 +428,8 @@ def catch_file_name(img, sch_region):
 
 
 if __name__ == "__main__":
-    get_gunsu()
+    go_date("220824")
+    # get_gunsu()
     # cs_img = "D:/FineTec/DailyLoss/Loss_img/cs_sheet.png"
     # cs_name = "D:/FineTec/DailyLoss/ocr/202112114-주간-10.png"
     # srch_Region1 = 672, 0, 554, 600 # 상영역
