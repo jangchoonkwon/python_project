@@ -37,12 +37,13 @@ def cs_get_names(img):
     time.sleep(1)
     print(n_list)
 
-    with open("d:/FineTec/DailyLoss/ocr/20220519.csv", 'a', newline='', encoding='cp949') as file:
+    with open("d:/FineTec/DailyLoss/ocr/cs_list.csv", 'a', newline='', encoding='cp949') as file:
         writer = csv.writer(file)
         writer.writerow(n_list)
 
     cv2.imshow('Image', img)
     cv2.waitKey(1000)
+
 
 
 if __name__ == "__main__":

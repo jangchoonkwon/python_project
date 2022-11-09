@@ -1,7 +1,6 @@
 import pyautogui as pag
 import time, cv2, os, re
 
-
 try:
     from PIL import Image
 except ImportError:
@@ -11,49 +10,53 @@ import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
 
 
-def go_date(xdt: object) -> str: #"220103"
+def go_date(xdt: object) -> str:  # "220103"
     time.sleep(1)
-    pag.click(1220, 900, duration = 0.5)
-    pag.dragRel(0, -380, duration = 1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_top.png", confidence=0.85, region=(672, 800, 554, 1080 - 800))
+    pag.click(1215, 900, duration=0.5)
+    pag.dragRel(0, -380, duration=1)
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_top.png", confidence=0.75,
+                                      region=(672, 800, 554, 1080 - 800))
     time.sleep(1)
     pag.click(center)
     time.sleep(1)
-    pag.moveTo(1205, 130, 0.5)
+    pag.moveTo(1200, 130, 0.5)
     pag.click()
     time.sleep(1)
-    pag.moveTo(1194, 174, 0.5)
+    pag.moveTo(1190, 174, 0.5)
     pag.click()
     time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal3.png", confidence=0.85, region=(672, 300, 554, 500))
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal3.png", confidence=0.85,
+                                      region=(672, 300, 554, 500))
     pag.click(center)
     time.sleep(2)
     pag.typewrite(f'{xdt[:2]}.{xdt[2:4]}.{xdt[-2:]}.')
-    time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_cnf.png", confidence=0.9, region=(672, 600, 554, 400))
+    time.sleep(3)
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_cnf.png", confidence=0.70,
+                                      region=(672, 600, 554, 400))
     pag.click(center)
     time.sleep(1)
-    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_sch.png", confidence=0.9, region=(672, 800, 554, 1080 - 800))
+    center = pag.locateCenterOnScreen("D:/FineTec/DailyLoss/Loss_img/cs_cal_sch.png", confidence=0.70,
+                                      region=(672, 800, 554, 1080 - 800))
     pag.click(center)
     time.sleep(1)
 
 
-def get_gunsu(img_gunsu = "d:/FineTec/DailyLoss/ocr/gunsu.png",sch_region = [672,0,554,600]):
+def get_gunsu(img_gunsu="d:/FineTec/ocr/gunsu.png", sch_region=[672, 0, 554, 400]):
     time.sleep(1)
-    p_list = pag.locateAllOnScreen(img_gunsu, confidence=0.9, region=sch_region)
+    p_list = pag.locateAllOnScreen(img_gunsu, confidence=0.70, region=sch_region)
     p_list = list(p_list)
     print(p_list)
-    p_list = p_list[0][0], p_list[0][1]-2, p_list[0][2]+32, p_list[0][3]+2  # 사용하는 코드
+    p_list = p_list[0][0], p_list[0][1] - 2, p_list[0][2] + 32, p_list[0][3] + 2  # 사용하는 코드
     print(p_list)
-    pag.screenshot("d:/FineTec/DailyLoss/ocr/gunsu1.png", region=p_list)
-    tgrImg = "d:/FineTec/DailyLoss/ocr/gunsu1.png"
+    pag.screenshot("d:/FineTec/ocr/gunsu1.png", region=p_list)
+    tgrImg = "d:/FineTec/ocr/gunsu1.png"
     time.sleep(3)
     image = cv2.imread(tgrImg)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     filename = '{}.png'.format(os.getpid())
     cv2.imwrite(filename, gray)
     text = pytesseract.image_to_string(Image.open(filename), lang="kor")
-    text = re.findall("\d{2}", text)
+    text = re.findall("\d{1,2}", text)
     cv2.imshow(filename, image)
     cv2.waitKey(1)
     os.remove(filename)
@@ -63,13 +66,13 @@ def get_gunsu(img_gunsu = "d:/FineTec/DailyLoss/ocr/gunsu.png",sch_region = [672
 
 def catch_scroll(img, sch_region):
     time.sleep(1)
-    p_list = pag.locateAllOnScreen(img, confidence=0.9, region=sch_region)
+    p_list = pag.locateAllOnScreen(img, confidence=0.70, region=sch_region)
     p_list = list(p_list)
     print(p_list)
     p_list = p_list[0][0] + 100, p_list[0][1] - 3, p_list[0][2] + 370, p_list[0][3] + 8  # 사용하는 코드
     print(p_list)
-    pag.screenshot("d:/FineTec/DailyLoss/ocr/cs_name.png", region=p_list)
-    tgrImg = "d:/FineTec/DailyLoss/ocr/cs_name.png"
+    pag.screenshot("d:/FineTec/ocr/cs_name.png", region=p_list)
+    tgrImg = "d:/FineTec/ocr/cs_name.png"
     time.sleep(3)
     image = cv2.imread(tgrImg)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -77,10 +80,8 @@ def catch_scroll(img, sch_region):
     cv2.imwrite(filename, gray)
     text = pytesseract.image_to_string(Image.open(filename), lang='kor')
 
-    del_dic = {
-        ' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
-        "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"
-    }
+    del_dic = {' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
+               "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"}
 
     for word, replacement in del_dic.items():
         text = text.replace(word, replacement)
@@ -96,7 +97,7 @@ def catch_scroll(img, sch_region):
     outname = '{}.png'.format(text)
 
     time.sleep(1)
-    outpath = "D:/FineTec/DailyLoss/ocr/cs_dn/"
+    outpath = "D:/FineTec/ocr/cs_dn/"
     out_full_name = outpath + outname
     print(text)
     # with open(outpath + '{0}.{1}'.format("csSheet", "txt"), 'a', encoding='cp949') as f:
@@ -106,7 +107,8 @@ def catch_scroll(img, sch_region):
     cv2.waitKey(1)
 
     time.sleep(1)
-    p_click = pag.locateCenterOnScreen("d:/FineTec/DailyLoss/ocr/cs_sheet.png", confidence=0.8, region=(672, p_list[1], 600, 500))
+    p_click = pag.locateCenterOnScreen("d:/FineTec/ocr/cs_sheet.png", confidence=0.70,
+                                       region=(672, p_list[1], 600, 500))
     pag.click(p_click)
     time.sleep(7)
     pag.screenshot(out_full_name, region=(672, 170, 554, 800))
@@ -127,13 +129,13 @@ def catch_scroll(img, sch_region):
 
 def catch_top(img, sch_region):
     time.sleep(2)
-    p_list = pag.locateAllOnScreen(img, confidence=0.9, region=sch_region)
+    p_list = pag.locateAllOnScreen(img, confidence=0.8, region=sch_region)
     p_list = list(p_list)
     p_list = p_list[0][0] + 100, p_list[0][1], p_list[0][2] + 370, p_list[0][3] + 8  # 사용하는 코드
     print(p_list)
     # p_list = p_list[0][0] + 100, p_list[0][1], p_list[0][2] + 340, p_list[0][3] - 100
-    pag.screenshot("d:/FineTec/DailyLoss/ocr/cs_name.png", region=p_list)
-    tgrImg = "d:/FineTec/DailyLoss/ocr/cs_name.png"
+    pag.screenshot("d:/FineTec/ocr/cs_name.png", region=p_list)
+    tgrImg = "d:/FineTec/ocr/cs_name.png"
     time.sleep(3)
     image = cv2.imread(tgrImg)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -141,10 +143,8 @@ def catch_top(img, sch_region):
     cv2.imwrite(filename, gray)
     text = pytesseract.image_to_string(Image.open(filename), lang='kor')
 
-    del_dic = {
-        ' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
-        "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"
-    }
+    del_dic = {' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
+               "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"}
     for word, replacement in del_dic.items():
         text = text.replace(word, replacement)
 
@@ -159,7 +159,7 @@ def catch_top(img, sch_region):
     outname = '{}.png'.format(text)
 
     time.sleep(1)
-    outpath = "D:/FineTec/DailyLoss/ocr/cs_dn/"
+    outpath = "D:/FineTec/ocr/cs_dn/"
     out_full_name = outpath + outname
     print(text)
     # with open(outpath + '{0}.{1}'.format("csSheet", "txt"), 'a', encoding='cp949') as f:
@@ -173,7 +173,7 @@ def catch_top(img, sch_region):
     # assert isinstance(p_click, object)
     # p_click = list(p_click)
     # p_click = pag.moveTo(p_click[1][0] + 240, p_click[1][1] + 176)
-    p_click = pag.locateCenterOnScreen("d:/FineTec/DailyLoss/ocr/cs_sheet.png", confidence=0.8,
+    p_click = pag.locateCenterOnScreen("d:/FineTec/ocr/cs_sheet.png", confidence=0.8,
                                        region=(672, p_list[1], 554, 300))
     pag.click(p_click)
     time.sleep(8)
@@ -197,13 +197,13 @@ def catch_top(img, sch_region):
 
 def catch_middle(img, sch_region):
     time.sleep(2)
-    p_list = pag.locateAllOnScreen(img, confidence=0.9, region=sch_region)
+    p_list = pag.locateAllOnScreen(img, confidence=0.8, region=sch_region)
     p_list = list(p_list)
     p_list = p_list[1][0] + 100, p_list[1][1], p_list[1][2] + 370, p_list[1][3] + 8  # 사용하는 코드
     print(p_list)
     # p_list = p_list[0][0] + 100, p_list[0][1], p_list[0][2] + 340, p_list[0][3] - 100
-    pag.screenshot("d:/FineTec/DailyLoss/ocr/cs_name.png", region=p_list)
-    tgrImg = "d:/FineTec/DailyLoss/ocr/cs_name.png"
+    pag.screenshot("d:/FineTec/ocr/cs_name.png", region=p_list)
+    tgrImg = "d:/FineTec/ocr/cs_name.png"
     time.sleep(3)
     image = cv2.imread(tgrImg)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -211,10 +211,8 @@ def catch_middle(img, sch_region):
     cv2.imwrite(filename, gray)
     text = pytesseract.image_to_string(Image.open(filename), lang='kor')
 
-    del_dic = {
-        ' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
-        "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"
-    }
+    del_dic = {' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
+               "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"}
     for word, replacement in del_dic.items():
         text = text.replace(word, replacement)
 
@@ -229,7 +227,7 @@ def catch_middle(img, sch_region):
     outname = '{}.png'.format(text)
 
     time.sleep(1)
-    outpath = "D:/FineTec/DailyLoss/ocr/cs_dn/"
+    outpath = "D:/FineTec/ocr/cs_dn/"
     out_full_name = outpath + outname
     print(text)
     # with open(outpath + '{0}.{1}'.format("csSheet", "txt"), 'a', encoding='cp949') as f:
@@ -243,7 +241,7 @@ def catch_middle(img, sch_region):
     # assert isinstance(p_click, object)
     # p_click = list(p_click)
     # p_click = pag.moveTo(p_click[1][0] + 240, p_click[1][1] + 176)
-    p_click = pag.locateCenterOnScreen("d:/FineTec/DailyLoss/ocr/cs_sheet.png", confidence=0.8,
+    p_click = pag.locateCenterOnScreen("d:/FineTec/ocr/cs_sheet.png", confidence=0.8,
                                        region=(672, p_list[1], 554, 300))
     pag.click(p_click)
     time.sleep(8)
@@ -267,12 +265,12 @@ def catch_middle(img, sch_region):
 
 def catch_bottom(img, sch_region):
     time.sleep(2)
-    p_list = pag.locateAllOnScreen(img, confidence=0.9, region=sch_region)
+    p_list = pag.locateAllOnScreen(img, confidence=0.8, region=sch_region)
     p_list = list(p_list)
     p_list = p_list[2][0] + 100, p_list[2][1], p_list[2][2] + 370, p_list[2][3] + 8  # 사용하는 코드
     # p_list = p_list[0][0] + 100, p_list[0][1], p_list[0][2] + 340, p_list[0][3] - 100
-    pag.screenshot("d:/FineTec/DailyLoss/ocr/cs_name.png", region=p_list)
-    tgrImg = "d:/FineTec/DailyLoss/ocr/cs_name.png"
+    pag.screenshot("d:/FineTec/ocr/cs_name.png", region=p_list)
+    tgrImg = "d:/FineTec/ocr/cs_name.png"
     time.sleep(3)
     image = cv2.imread(tgrImg)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -280,10 +278,8 @@ def catch_bottom(img, sch_region):
     cv2.imwrite(filename, gray)
     text = pytesseract.image_to_string(Image.open(filename), lang='kor')
 
-    del_dic = {
-        ' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
-        "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"
-    }
+    del_dic = {' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
+               "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"}
     for word, replacement in del_dic.items():
         text = text.replace(word, replacement)
 
@@ -298,7 +294,7 @@ def catch_bottom(img, sch_region):
     outname = '{}.png'.format(text)
 
     time.sleep(1)
-    outpath = "D:/FineTec/DailyLoss/ocr/cs_dn/"
+    outpath = "D:/FineTec/ocr/cs_dn/"
     out_full_name = outpath + outname
     print(text)
     # with open(outpath + '{0}.{1}'.format("csSheet", "txt"), 'a', encoding='cp949') as f:
@@ -312,7 +308,7 @@ def catch_bottom(img, sch_region):
     # assert isinstance(p_click, object)
     # p_click = list(p_click)
     # p_click = pag.moveTo(p_click[2][0] + 240, p_click[2][1] + 176)
-    p_click = pag.locateCenterOnScreen("d:/FineTec/DailyLoss/ocr/cs_sheet.png", confidence=0.8,
+    p_click = pag.locateCenterOnScreen("d:/FineTec/ocr/cs_sheet.png", confidence=0.8,
                                        region=(672, p_list[1], 554, 1080 - p_list[1]))
     pag.click(p_click)
     time.sleep(8)
@@ -361,15 +357,11 @@ def catch_click(img, outfile, srchRigon):
 
 
 def catch_cs(sch_region, fname):
-    """
-
-    :rtype: object
-    """
     pag.moveTo(670 + 554, 570, duration=0.5)
     time.sleep(1)
     pag.click()
     outname = '/{}.png'.format(fname)
-    outpath = "D:/FineTec/DailyLoss/ocr" + "/{}".format(fname[:8])
+    outpath = "D:/FineTec/ocr" + "/{}".format(fname[:8])
     out_full_name = outpath + outname
     pag.screenshot(out_full_name, region=(672, 170, 554, 800))
     time.sleep(1)
@@ -385,13 +377,13 @@ def catch_cs(sch_region, fname):
 
 def catch_file_name(img, sch_region):
     time.sleep(1)
-    p_list = pag.locateAllOnScreen(img, confidence=0.9, region=sch_region)
+    p_list = pag.locateAllOnScreen(img, confidence=0.8, region=sch_region)
     p_list = list(p_list)
     print(p_list)
     p_list = p_list[0][0] + 100, p_list[0][1] - 3, p_list[0][2] + 370, p_list[0][3] + 8  # 사용하는 코드
     print(p_list)
-    pag.screenshot("d:/FineTec/DailyLoss/ocr/cs_name.png", region=p_list)
-    tgrImg = "d:/FineTec/DailyLoss/ocr/cs_name.png"
+    pag.screenshot("d:/FineTec/ocr/cs_name.png", region=p_list)
+    tgrImg = "d:/FineTec/ocr/cs_name.png"
     time.sleep(3)
     image = cv2.imread(tgrImg)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -399,10 +391,8 @@ def catch_file_name(img, sch_region):
     cv2.imwrite(filename, gray)
     text = pytesseract.image_to_string(Image.open(filename), lang='kor')
 
-    del_dic = {
-        ' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
-        "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"
-    }
+    del_dic = {' ': '', '\ㅣ': '', '\n': '', '': '', '확인': '', 'ㅣ메주': '', "연상": "연장", "조줄": "조출", "조술": "조출", \
+               "소술": "조출", "소줄": "조출", "소출": "조출", "\/": "7", "]": "1", "/": "7"}
 
     for word, replacement in del_dic.items():
         text = text.replace(word, replacement)
@@ -428,19 +418,11 @@ def catch_file_name(img, sch_region):
 
 
 if __name__ == "__main__":
-    go_date("220824")
-    # get_gunsu()
-    # cs_img = "D:/FineTec/DailyLoss/Loss_img/cs_sheet.png"
-    # cs_name = "D:/FineTec/DailyLoss/ocr/202112114-주간-10.png"
-    # srch_Region1 = 672, 0, 554, 600 # 상영역
-    # srch_Region2 = 672, 500, 554, 300 # 중영역
-    # srch_Region3 = 672, 800, 554, 200 # 하영역
-    # catch_scroll("d:/FineTec/DailyLoss/ocr/cs_drino.png", (srch_Region1))
-    # getRng.pressF4()
-    # catch_top("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 0, 554, 800))
-    # catch_middle("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 0, 554, 800))
-    # catch_bottom("d:/FineTec/DailyLoss/ocr/cs_drino.png", (672, 0, 554, 800))
-    # catch_cs((672, 0, 554, 1080), "20220112-주간연장-7")
-
+    # rng_src = [672, 170, 554, 800]
+    # cs_no = "20220902-연장-45"
+    # catch_cs(rng_src, cs_no)
+    get_gunsu()
+    # go_date("220827")
 else:
     print("---------- module running ----------")
+    
